@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { getCities } from "../api/citiesApi";
 import { getWeather } from "../api/weatherApi";
+import type { City, WeatherData } from "../types/Weather";
 
 const Home = () => {
-  const [cities, setCities] = useState<any[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
   const [search, setSearch] = useState("");
-  const [weather, setWeather] = useState<any>(null);
+  const [weather, setWeather] = useState<WeatherData | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
     getCities().then(setCities);
   }, []);
 
-  const filtered = cities.filter((c: any) =>
+  const filtered = cities.filter((c: City) =>
     c.city_name_he?.includes(search)
   );
 
@@ -21,7 +22,7 @@ const Home = () => {
       setError("");
       const data = await getWeather(city);
 
-      // בדיקה שהמידע תקין
+      // Checking that the information is correct
       if (!data || !data.location || !data.current) {
         throw new Error("API error");
       }
@@ -36,7 +37,7 @@ const Home = () => {
       });
       localStorage.setItem("history", JSON.stringify(history));
 
-    } catch (err) {
+    } catch {
       setError("שגיאה בטעינת הנתונים");
       setWeather(null);
     }
@@ -65,7 +66,7 @@ const Home = () => {
     const value = e.target.value;
     setSearch(value);
 
-    const match = cities.find((c: any) =>
+    const match = cities.find((c: City) =>
       c.name_he === value
     );
 
@@ -77,7 +78,7 @@ const Home = () => {
 
         <select onChange={(e) => handleSelect(e.target.value)}>
           <option>בחר עיר</option>
-          {filtered.slice(0, 50).map((c: any, i: number) => (
+          {filtered.slice(0, 50).map((c: City, i: number) => (
             <option key={i} value={c.city_name_en}>
               {c.city_name_he}
             </option>

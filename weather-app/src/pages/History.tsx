@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import type { HistoryItem } from "../types/Weather";
 
 const History = () => {
-  const [history, setHistory] = useState<any[]>([]);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("history") || "[]");
